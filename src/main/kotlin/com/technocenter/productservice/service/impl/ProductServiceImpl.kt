@@ -1,17 +1,23 @@
 package com.technocenter.productservice.service.impl
 
+import com.technocenter.productservice.domain.constant.ConstantVariable
+import com.technocenter.productservice.domain.dto.req.ReqCreateProductDto
 import com.technocenter.productservice.domain.dto.res.ResGetSingleProductDto
 import com.technocenter.productservice.domain.dto.res.ResGetUserDetailDto
+import com.technocenter.productservice.domain.entity.MasterProductEntity
 import com.technocenter.productservice.exception.DataNotFoundException
 import com.technocenter.productservice.repository.MasterProductRepository
 import com.technocenter.productservice.rest.UserManagementClient
 import com.technocenter.productservice.service.ProductService
+import com.technocenter.productservice.service.UserService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Service
 
 @Service
 class ProductServiceImpl(
     private val productRepository: MasterProductRepository,
-    private val userManagementClient: UserManagementClient
+    private val httpServletRequest: HttpServletRequest,
+    private val userService: UserService
 ): ProductService {
     override fun getProductById(id: Int): ResGetSingleProductDto {
         //STEP 1 -> GET PRODUCT DI DB BY ID PRODUCT
@@ -22,8 +28,7 @@ class ProductServiceImpl(
         //STEP 2 -> GET USER BY ID (product.created_by)
         var user: ResGetUserDetailDto? = null
         if(product.createdBy != null){
-            user = userManagementClient.getUserById(product.createdBy!!.toInt())
-                .body!!.data
+            user = userService.getUserById(product.createdBy!!.toInt())
         }
 
         //Mapping response
@@ -35,6 +40,25 @@ class ProductServiceImpl(
             //JIKA USER != NULL MAKA AMBIL user.fullname
             //JIKA USER == NULL maka createdBy = null
             createdBy = user?.fullName,
+        )
+    }
+
+    override fun createProduct(req: ReqCreateProductDto): ResGetSingleProductDto {
+        val product = MasterProductEntity(
+            name = req.name,
+            price = req.price,
+            stock = req.stock
+        )
+        //STEP 1 AMBIL HEADER
+        val userId = httpServletRequest.getHeader(ConstantVariable.HEADER_USER_ID)!!
+        product.createdBy = userId
+        val productDb = productRepository.save(product)
+
+        return ResGetSingleProductDto(
+            productId = productDb.id!!,
+            name = productDb.name,
+            price = productDb.price,
+            stock = productDb.stock
         )
     }
 }

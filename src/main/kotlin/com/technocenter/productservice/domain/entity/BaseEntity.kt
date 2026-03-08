@@ -13,7 +13,7 @@ abstract class BaseEntity(
     val createdAt: Timestamp? = null,
 
     @Column
-    val createdBy: String? = null,
+    var createdBy: String? = null,
 
     @UpdateTimestamp
     @Column(nullable = false)
