@@ -16,10 +16,13 @@ import org.springframework.stereotype.Service
 @Service
 class ProductServiceImpl(
     private val productRepository: MasterProductRepository,
+    private val userManagementClient: UserManagementClient,
     private val httpServletRequest: HttpServletRequest,
     private val userService: UserService
 ): ProductService {
     override fun getProductById(id: Int): ResGetSingleProductDto {
+        val userId = httpServletRequest.getHeader("X-USER-ID")
+
         //STEP 1 -> GET PRODUCT DI DB BY ID PRODUCT
         val product = productRepository.findById(id).orElseThrow {
             DataNotFoundException("Product with id $id not found")
@@ -60,5 +63,13 @@ class ProductServiceImpl(
             price = productDb.price,
             stock = productDb.stock
         )
+    }
+
+    override fun deleteUserProduct(userId: Int) {
+        val userProductList = productRepository.findByUserId(userId)
+        userProductList.forEach { product ->
+            product.isDelete = true
+        }
+        productRepository.saveAll(userProductList)
     }
 }

@@ -11,9 +11,9 @@ spring:
     name: productservice
   datasource: #CONFIG POSTGRES CONNECTION
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/product_batch_16
+    url: jdbc:postgresql://localhost:5432/batch16_product_management
     username: postgres
-    password: dimas
+    password: admin
   jpa:
     hibernate:
       ddl-auto: update
@@ -25,6 +25,9 @@ server:
   port: 8082
   servlet:
     context-path: /product
+
+kafka:
+  bootstrap-servers: localhost:9092
 
 eureka:
   client:
