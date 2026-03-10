@@ -10,7 +10,7 @@ spring:
       username: default
       password: CcLqI7gBESGsGfd3wZ7WJwI20kM1AOeMxtVXRg7XfN5QmB2imDNI5gDAIqf8qQzn
   application:
-    name: productservice
+    name: productmanagementservice
   datasource: #CONFIG POSTGRES CONNECTION
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://158.178.246.204:3006/batch16_product_management
@@ -26,10 +26,10 @@ spring:
 server:
   port: 8082
   servlet:
-    context-path: /product
+    context-path: /product-management
 
 kafka:
-  bootstrap-servers: 158.178.246.204:3021
+  bootstrap-servers: 158.178.246.204:3022
 
 eureka:
   client:

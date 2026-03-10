@@ -1,9 +1,9 @@
 package com.technocenter.productservice.domain.dto.res
 
-data class ResGetSingleProductDto(
+data class ResCreateProductDto (
     val productId: Int,
     val name: String,
-    val stock: Int,
     val price: Long,
-    val createdBy: String? = null,
+    val stock: Int,
+    val categoryName: String? = null
 )

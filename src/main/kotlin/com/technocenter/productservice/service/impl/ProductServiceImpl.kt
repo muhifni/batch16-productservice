@@ -2,6 +2,7 @@ package com.technocenter.productservice.service.impl
 
 import com.technocenter.productservice.domain.constant.ConstantVariable
 import com.technocenter.productservice.domain.dto.req.ReqCreateProductDto
+import com.technocenter.productservice.domain.dto.res.ResCreateProductDto
 import com.technocenter.productservice.domain.dto.res.ResGetSingleProductDto
 import com.technocenter.productservice.domain.dto.res.ResGetUserDetailDto
 import com.technocenter.productservice.domain.entity.MasterProductEntity
@@ -46,7 +47,7 @@ class ProductServiceImpl(
         )
     }
 
-    override fun createProduct(req: ReqCreateProductDto): ResGetSingleProductDto {
+    override fun createProduct(req: ReqCreateProductDto): ResCreateProductDto {
         val product = MasterProductEntity(
             name = req.name,
             price = req.price,
@@ -57,11 +58,12 @@ class ProductServiceImpl(
         product.createdBy = userId
         val productDb = productRepository.save(product)
 
-        return ResGetSingleProductDto(
+        return ResCreateProductDto(
             productId = productDb.id!!,
             name = productDb.name,
             price = productDb.price,
-            stock = productDb.stock
+            stock = productDb.stock,
+//            categoryName = productDb.
         )
     }
 

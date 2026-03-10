@@ -7,18 +7,30 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.sql.Timestamp
 
 @MappedSuperclass
-abstract class BaseEntity(
+abstract class BaseEntity {
     @CreationTimestamp
-    @Column(nullable = false)
-    val createdAt: Timestamp? = null,
-
+    @Column(
+        nullable = false,
+        updatable = false,
+        columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    )
+    val createdAt: Timestamp? = null
     @Column
-    var createdBy: String? = null,
+    var createdBy: String? = null
 
-    @UpdateTimestamp
-    @Column(nullable = false)
-    val updatedAt: Timestamp? = null,
+    @UpdateTimestamp  // otomatis diisi saat data diupdate
+    @Column(nullable = true)
+    val updatedAt: Timestamp? = null
+    @Column
+    var updatedBy: String? = null
 
-    @Column(nullable = false)
-    var isDelete: Boolean = false,
-)
+    @Column(
+        nullable = false,
+        columnDefinition = "BOOLEAN DEFAULT FALSE"
+    )
+    var isDelete: Boolean = false
+    @Column(nullable = true)
+    var deletedAt: Timestamp? = null
+    @Column
+    var deletedBy: Int? = null
+}
