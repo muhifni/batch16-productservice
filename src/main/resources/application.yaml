@@ -16,10 +16,6 @@ spring:
     url: jdbc:postgresql://158.178.246.204:3006/batch16_product_management
     username: postgres
     password: EzeX24QUrUpUU3MabkzocHHRcIZ8cxiaDbbftRI5JQgiF4dPLGoDjyPQp9wK7mCT
-    hikari:
-      maximum-pool-size: 5
-      idle-timeout: 30000
-      max-lifetime: 60000
   jpa:
     hibernate:
       ddl-auto: update
@@ -33,7 +29,7 @@ server:
     context-path: /product
 
 kafka:
-  bootstrap-servers: localhost:9092
+  bootstrap-servers: 158.178.246.204:3021
 
 eureka:
   client:
