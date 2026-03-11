@@ -14,6 +14,9 @@ import com.technocenter.productservice.rest.UserManagementClient
 import com.technocenter.productservice.service.ProductService
 import com.technocenter.productservice.service.UserService
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 
@@ -25,6 +28,7 @@ class ProductServiceImpl(
     private val userService: UserService,
     private val categoryRepository: MasterCategoryRepository
 ): ProductService {
+    @Cacheable("getProductById", key = "#id")
     override fun getProductById(id: Int): ResGetSingleProductDto {
         val userId = httpServletRequest.getHeader("X-USER-ID")
 
@@ -52,6 +56,7 @@ class ProductServiceImpl(
         )
     }
 
+    @Cacheable("getListProduct")
     override fun getListProduct(): List<ResGetSingleProductDto> {
         return productRepository.findAllActive().map { product ->
             var user: ResGetUserDetailDto? = null
@@ -70,6 +75,7 @@ class ProductServiceImpl(
         }
     }
 
+    @CacheEvict("getListProduct", allEntries = true)
     override fun createProduct(req: ReqCreateProductDto): ResCreateProductDto {
         // Cek category ada atau tidak
         val category = categoryRepository.findById(req.categoryId).orElseThrow {
@@ -102,6 +108,10 @@ class ProductServiceImpl(
         )
     }
 
+    @Caching(evict = [
+        CacheEvict("getProductById", key = "#id"),
+        CacheEvict("getListProduct", allEntries = true)
+    ])
     override fun updateProduct(id: Int, req: ReqUpdateProductDto): ResGetSingleProductDto {
         // Cari product
         val product = productRepository.findById(id).orElseThrow {
@@ -134,6 +144,10 @@ class ProductServiceImpl(
         )
     }
 
+    @Caching(evict = [
+        CacheEvict("getProductById", key = "#id"),
+        CacheEvict("getListProduct", allEntries = true)
+    ])
     override fun softDeleteProduct(id: Int): ResGetSingleProductDto {
         val product = productRepository.findById(id).orElseThrow {
             DataNotFoundException("Product with id $id not found")
