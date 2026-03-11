@@ -16,7 +16,7 @@ class CategoryServiceImpl(
         val category = MasterCategoryEntity(name = req.name)
         val saved = categoryRepository.save(category)
         return ResGetCategoryDto(
-            categoryId = saved.id!!,
+            id = saved.id!!,
             name = saved.name
         )
     }
@@ -24,7 +24,7 @@ class CategoryServiceImpl(
     override fun getAllCategories(): List<ResGetCategoryDto> {
         return categoryRepository.findAll().map {
             ResGetCategoryDto(
-                categoryId = it.id!!,
+                id = it.id!!,
                 name = it.name
             )
         }

@@ -4,9 +4,8 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Pattern
 
-data class ReqCreateProductDto(
+data class ReqUpdateProductDto(
     @field:NotBlank(message = "name is required")
     val name: String,
 
@@ -15,10 +14,9 @@ data class ReqCreateProductDto(
     val price: Long,
 
     @field:NotNull(message = "stock is required")
-    @field:Min(value = 0, message = "stock must be at least 0")
+    @field:Min(value = 1, message = "stock must be at least 1")
     @field:Max(value = 1000, message = "stock must not exceed 1000")
     val stock: Int,
 
-    @field:NotNull(message = "categoryId is required")
-    val categoryId: Int,
+    val categoryId: Int?
 )

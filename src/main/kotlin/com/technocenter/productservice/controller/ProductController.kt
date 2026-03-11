@@ -2,6 +2,7 @@ package com.technocenter.productservice.controller
 
 import com.technocenter.productservice.domain.dto.BaseResponse
 import com.technocenter.productservice.domain.dto.req.ReqCreateProductDto
+import com.technocenter.productservice.domain.dto.req.ReqUpdateProductDto
 import com.technocenter.productservice.domain.dto.res.ResCreateProductDto
 import com.technocenter.productservice.domain.dto.res.ResGetSingleProductDto
 import com.technocenter.productservice.exception.GeneralException
@@ -9,9 +10,11 @@ import com.technocenter.productservice.service.ProductService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -34,6 +37,16 @@ class ProductController(
         )
     }
 
+    @GetMapping
+    fun getListProduct(): ResponseEntity<BaseResponse<List<ResGetSingleProductDto>>> {
+        return ResponseEntity.ok(
+            BaseResponse(
+                message = "Success get list product",
+                data = productService.getListProduct()
+            )
+        )
+    }
+
     @PostMapping
     fun createProduct(
         @RequestHeader("X-ROLE") role: String,
@@ -47,6 +60,35 @@ class ProductController(
                 status = 201
             ),
             HttpStatus.CREATED
+        )
+    }
+
+    @PutMapping("/{id}")
+    fun updateProduct(
+        @RequestHeader("X-ROLE") role: String,
+        @PathVariable id: Int,
+        @Valid @RequestBody req: ReqUpdateProductDto
+    ): ResponseEntity<BaseResponse<ResGetSingleProductDto>> {
+        if (role != "admin") throw GeneralException(HttpStatus.FORBIDDEN, "Access denied")
+        return ResponseEntity.ok(
+            BaseResponse(
+                message = "Success update product",
+                data = productService.updateProduct(id, req)
+            )
+        )
+    }
+
+    @DeleteMapping("/{id}")
+    fun softDeleteProduct(
+        @RequestHeader("X-ROLE") role: String,
+        @PathVariable id: Int
+    ): ResponseEntity<BaseResponse<ResGetSingleProductDto>> {
+        if (role != "admin") throw GeneralException(HttpStatus.FORBIDDEN, "Access denied")
+        return ResponseEntity.ok(
+            BaseResponse(
+                message = "Success delete product",
+                data = productService.softDeleteProduct(id)
+            )
         )
     }
 

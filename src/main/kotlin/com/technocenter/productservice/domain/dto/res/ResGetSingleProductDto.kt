@@ -5,5 +5,6 @@ data class ResGetSingleProductDto(
     val name: String,
     val stock: Int,
     val price: Long,
+    val categoryName: String? = null,
     val createdBy: String? = null,
 )
